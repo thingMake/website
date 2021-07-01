@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Users</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../parts/common.css">
+    <style>
+      h1{
+        font-size:50px;
+        margin:0px;
+        text-align:center;
+      }
+
+      .hidden{display:none;}
+
+      #message{
+        width:100%;
+        height:200px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src = "../parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <h1>Users</h1>
+        <ul id="list"></ul>
+        <div class="hidden" id="messageHolder">
+          <textarea id="message"></textarea>
+          <button id="messageSend">Send</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      var list = document.getElementById("list")
+      fetch("https://server.thingmaker.repl.co/account",{
+        credentials:'include'
+      }).then(r => r.json()).then(r => {
+        if(!r.admin) document.getElementById("content").innerHTML = `<h1>Admin only page</h1>`
+      })
+      fetch("https://server.thingmaker.repl.co/users").then(r => r.json()).then(r => {
+        for(var i=0; i<r.length; i++){
+          r[i] = r[i].replace("user:", '')
+          list.innerHTML += `<li>${r[i]} | <a onclick="messageUser(unescape('${escape(r[i])}'))">Send Message</a></li>`
+        }
+      })
+
+      function messageUser(user){
+        document.getElementById("messageHolder").classList.remove("hidden")
+        document.getElementById("messageSend").onclick = function(){
+          var t = document.getElementById("message").value
+          fetch("https://server.thingmaker.repl.co/admin/messageUser/"+user, {
+            credentials: 'include',
+            method: "POST",
+            body: JSON.stringify({message: t})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              document.getElementById("messageHolder").classList.add("hidden")
+            }else{
+              alert(r.message)
+            }
+          })
+        }
+      }
+    </script>
+  </body>
+</html>

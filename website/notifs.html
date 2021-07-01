@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Notifications</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="parts/common.css">
+    <style>
+      .box{
+        border:1px solid lightgray;
+        border-radius:5px;
+        padding:10px 20px;
+        width:100%;
+        margin-bottom:20px;
+      }
+      .box.read{
+        background:#f6f6f6;
+      }
+      h1, h3{
+        margin:0px;
+      }
+      h1{font-size:50px;}
+      a{
+        text-decoration:none;
+        color:blue;
+        cursor:pointer;
+      }
+      a:hover{
+        text-decoration:underline;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body>
+    <script src="/website/parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <h1 id="username">Notifications</h1>
+        <br>
+      </div>
+    </div>
+    <script>
+      var content = document.getElementById("content")
+      fetch("https://server.thingmaker.repl.co/account", {
+        credentials: 'include'
+      }).then(r => r.json()).then(data => {
+        if((!data.notifs) || (data.notifs.length===0)){
+          content.innerHTML += "<span style='color:gray;'>No notifications yet</span>"
+          return
+        }
+        for(var i=data.notifs.length-1; i>=0; i--){
+          var r = data.notifs[i]
+          content.innerHTML += `<div class="box ${r.read ? "read" : ""}">${r.notif}</div>`
+        }
+
+        fetch("https://server.thingmaker.repl.co/clearNotifs", {
+          credentials: 'include'
+        }) //clear notifications
+      })
+    </script>
+  </body>
+</html>

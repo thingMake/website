@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profile</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="parts/common.css">
+    <style>
+      #boxs{
+        display: grid;
+        grid-column-gap:10%;
+      }
+      .box{
+        border:1px solid lightgray;
+        border-radius:5px;
+        padding:10px;
+        background:#fafafa;
+        width:50%;
+      }
+      .box h2, .box h3{
+        margin:0px;
+        margin-bottom:10px;
+      }
+      #BGImg{
+        width:100%;
+        height:150px;
+        background:lightgray;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+      }
+      #contentBG{
+        padding:0px;
+        background:#f8f8f8;
+      }
+      #notExsist{
+        padding:10px;
+        height:calc(100% - 47px);
+      }
+      #content{
+        height:100%;
+        background:transparent;
+      }
+      h1{
+        margin:10px 0px;
+        vertical-align: top;
+      }
+      #pfp{
+        width:100px;
+        height:100px;
+        border-radius:100%;
+        border:1px solid gray;
+        margin-right:40px;
+        float:left;
+      }
+      #top{
+        background:white;
+        padding:10px 20px;
+        overflow: auto;
+      }
+      #bio{
+        display:block;
+        clear:left;
+        margin-top:20px;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body>
+    <script src="/website/parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="BGImg"></div>
+      <div id="top">
+        <img id="pfp">
+        <h1 id="username" style="display:inline-block;">Someone's profile</h1><br>
+        <span id="info"></span><br>
+        <span id="bio"></span>
+      </div>
+      <div id="content">
+        <div id="boxs">
+          <div class="box" id="posts"><h2>Posts</h2></div>
+        </div>
+      </div>
+    </div>
+    <div id="notExsist" style="display:none;">
+      <h1>Hey! This user doesn't exsist.</h1>
+      <p>It may have been deleted or you typed the username wrong.</p>
+    </div>
+    <script>
+      const urlParams = new URLSearchParams(location.search);
+
+      var username = urlParams.get("user")
+      fetch('https://server.thingmaker.repl.co/account/'+username,{
+        credentials: "include"
+      }).then(r => r.json()).then(data => {
+        if((!data) || (!username)){
+          document.querySelector("#contentBG").style.display = "none"
+          document.querySelector("#notExsist").style.display = ""
+          return
+        }
+        document.querySelector('#username').innerHTML = data.username + (data.admin ? " (Admin)" : "")
+        if(data.pfp){
+          document.getElementById("pfp").src = data.pfp
+        }
+        if(data.bg){
+          document.getElementById("BGImg").style.backgroundImage = "url('"+data.bg+"')"
+        }
+        if(data.timestamp){
+          document.querySelector("#info").innerHTML = `
+          Account created: ${new Date(data.timestamp).toUTCString()}
+          `
+        }
+        if(data.bio){
+          document.querySelector("#bio").innerHTML = "<b>@"+username+"</b> - "+data.bio
+        }
+      })
+
+      fetch('https://server.thingmaker.repl.co/posts/'+username,{
+        credentials: "include"
+      }).then(r => r.json()).then(data => {
+        var el = document.getElementById("posts")
+        if(data.length === 0){
+          el.innerHTML += "<span style='color:gray;'>They don't have any posts.</span>"
+          return
+        }
+        data.forEach(r => {
+          el.innerHTML += `<a href="post.html?id=${r.id}">${r.title}</a><br>`
+        })
+      })
+    </script>
+  </body>
+</html>

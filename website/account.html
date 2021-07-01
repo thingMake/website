@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Account</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="parts/common.css">
+    <style>
+      #content{
+        display:flex;
+        flex-direction:row;
+        background:#eee;
+      }
+
+      .box{
+        border:1px solid gray;
+        border-radius:10px;
+        padding:20px;
+        background:white;
+        margin-bottom:40px;
+      }
+
+      #left{
+        width:20%;
+        padding-right:20px;
+      }
+      #right{
+        width:80%;
+      }
+
+      #settingsNav {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        border:1px solid #ddd;
+      }
+
+      /* Style the navigation links */
+      #settingsNav li a {
+        padding: 12px;
+        text-decoration: none;
+        color: black;
+        display: block
+      }
+
+      #settingsNav li a:hover {
+        background-color: #f8f8f8;
+      }
+
+      #bioBox{
+        width:100%;
+        min-height:100px;
+        resize:vertical;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body>
+    <script src="/website/parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <div id="left">
+          <h3 id="username">My account</h3><br><br>
+          <ul id="settingsNav">
+            <li><a href="#options">Options</a></li>
+            <li><a href="#pfp">Profile picture</a></li>
+            <li><a href="#bio">Biography</a></li>
+          </ul>
+        </div>
+        <div id="right">
+          <!--<div class="box">
+            <h4>My projects (Only you can see this)</h4>
+            <div id="projects"></div>
+          </div>-->
+          <div class="box" id="options">
+            <div id="profile"></div><br>
+            <button onclick="logout()">Logout</button>
+            <button onclick="deleteAccount()">Delete account</button>
+          </div>
+          <div class="box" id="login">
+            <b>Username:</b>
+            <input disabled id="usernameInp" type="username" class="small"><br>
+            <button id="changePwd" onclick="changePwd()">Change password</button>
+            <div id="changePwdForm" style="display:none;"></div>
+          </div>
+          <div class="box" id="pfp">
+            <h3>Profile picture (pfp)</h3>
+            <img id="pfpImg" alt="your profile picture" style="width:100px;"><br><br>
+            <h3>Background</h3>
+            <img id="bg" alt="your background" style="width:400px;"><br><br>
+            <b>Change pfp/background</b>
+            <input placeholder="Enter url for image"><br>
+            <button onclick="changePfp()">Set as pfp</button>
+            <button onclick="changeBG()">Set as background</button>
+          </div>
+          <div class="box" id="bio">
+            <h3>Biography</h3>
+            <textarea id="bioBox"></textarea><br>
+            <button onclick="saveBio()">Save</button>
+            <span id="bioInfo"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+        /*var container = document.querySelector("#projects");
+        
+        try{
+          var webpage = unescape(localStorage.getItem("Programs").split("|")[0]);
+          var pjs = unescape(localStorage.getItem("PJSPrograms").split("|")[0]);
+          
+          container.innerHTML = `<a href="code%20editor/pjs.html?program=0">First PJS Program</a>`
+          container.innerHTML += "<br>";
+          container.innerHTML += `<a href="code%20editor/html.html?program=0">First Webpage</a>`
+        }catch{}*/
+
+        fetch('https://server.thingmaker.repl.co/account',{
+          credentials: "include"
+        }).then(r => r.json()).then(data => {
+          document.querySelector('#username').innerHTML = data.username+"'s account (My account)"
+          document.querySelector("#usernameInp").value = data.username
+          document.querySelector("#profile").innerHTML = "<a href='user.html?user="+data.username+"'>My profile</a>"+(data.admin ? "<br>You are an admin" : "")
+          document.querySelector("#pfp #pfpImg").src = data.pfp
+          document.querySelector("#pfp #bg").src = data.bg
+          document.querySelector("#bioBox").value = data.bio || "Write a bio"
+        })
+
+        function logout(){
+          fetch("https://server.thingmaker.repl.co/logout", {credentials: 'include'}).then(() => location.href = "/website/website.html").catch(alert)
+        }
+        function deleteAccount(){
+          fetch("https://server.thingmaker.repl.co/deleteAccount", {
+            method: "DELETE",
+            credentials: 'include'
+          }).then(() => location.href = "/website/website.html").catch(alert)
+        }
+        function changePfp(){
+          var url = document.querySelector("#pfp input").value
+          fetch("https://server.thingmaker.repl.co/changePfp", {
+            method:"POST",
+            credentials:'include',
+            body: JSON.stringify({pfp:url})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              document.querySelector("#pfp #pfpImg").src = r.pfp
+            }else alert(JSON.stringify(r.message))
+          })
+        }
+        function changeBG(){
+          var url = document.querySelector("#pfp input").value
+          fetch("https://server.thingmaker.repl.co/changePfp", {
+            method:"POST",
+            credentials:'include',
+            body: JSON.stringify({bg:url})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              document.querySelector("#pfp #bg").src = r.bg
+            }else alert(JSON.stringify(r.message))
+          })
+        }
+        function changePwd(){
+          var btn = document.querySelector("#changePwd")
+          btn.style.display = "none"
+          var form = document.querySelector("#changePwdForm")
+          form.style.display = ""
+          form.innerHTML = `
+          <b>Enter your new password:</b>
+          <input id="newPwd" type="password" class="small">
+          <button id="changePwdBtn">Change password</button>
+          `
+          var ok = document.getElementById("changePwdBtn");
+          ok.onclick = () => {
+            form.style.display = "none"
+            fetch("https://server.thingmaker.repl.co/changePwd", {
+              method:"POST",
+              credentials:'include',
+              body: JSON.stringify({pwd: document.getElementById("newPwd").value})
+            }).then(r => r.json()).then(r => {
+              if(r.success){
+                btn.style.display = ""
+              }else alert(r.message)
+            })
+          }
+        }
+        function saveBio(){
+          document.querySelector("#bioInfo").innerHTML = ""
+          var v = document.querySelector("#bioBox").value
+          fetch("https://server.thingmaker.repl.co/changeBio", {
+            method:"POST",
+            credentials:'include',
+            body: JSON.stringify({bio:v})
+          }).then(r => r.json()).then(r => {
+            if(r.success){
+              document.querySelector("#bioInfo").innerHTML = "Success!"
+            }else document.querySelector("#bioInfo").innerHTML = r.message
+          })
+        }
+    </script>
+  </body>
+</html>

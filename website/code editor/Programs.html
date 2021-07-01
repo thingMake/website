@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Programs</title>
+    <meta charset="UTF-8">
+    <script src="talk throughs/talkThrough.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body,html{
+        scroll-behavior:smooth;
+        height:100%;
+      }
+      /* Style the body */
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+      }
+      .navbar{
+        overflow:hidden;
+        background:#333;
+        height:47px;
+      }
+      .navbar a{
+        float: left;
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+        cursor:pointer;
+      }
+      /* Right-aligned link */
+      .navbar .right {
+        float: right;
+      }
+      .navbar .logo{
+        background:#1abc9c;
+      }
+      .navbar input{
+        padding: 6px 10px;
+        margin:8px 20px;
+        float:left;
+      }
+      /* Change color on hover */
+      .navbar a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+      
+      #contentBG{
+        background:#eee;
+        padding:0px 10%;
+        height:calc(100% - 47px);
+      }
+      #content{
+        background:white;
+        padding:10px 20px;
+        height:100%;
+      }
+      h1{
+        font-size:50px;
+        margin:0px;
+        text-align:center;
+      }
+      a{
+        display:block;
+      }
+      #programs, #PJSPrograms, #talkThroughs{
+        margin-top:50px;
+      }
+      h3{
+        margin:0px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="../parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <h1>My Programs</h1>
+        
+        <a href="html.html">New Webpage</a>
+        <a href="pjs.html">New Program</a>
+
+        <div id="talkThroughs">
+          <h3>Videos</h3>
+        </div>
+
+        <div id="programs">
+          <h3>Webpages</h3>
+        </div>
+
+        <div id="PJSPrograms">
+          <h3>Programs</h3>
+        </div>
+      </div>
+    </div>
+    <script>
+      window.onload=function(){
+        //talkThroughs
+        var programContainer=document.getElementById("talkThroughs");
+        for(var i=0; i<talkThroughs.length; i++){
+          var a = document.createElement("a");
+          a.href="talkThrough.html?wich=" + i;
+          a.innerHTML=talkThroughs[i].name;
+          programContainer.appendChild(a);
+        }
+
+        //webpage
+        var programContainer=document.getElementById("programs");
+        var programs = localStorage.getItem("Programs");
+        if(!programs)return false;
+
+        programs = programs.split("|");
+        for(var i=0; i<programs.length; i++){
+          var a = document.createElement("a");
+          a.href="html.html?program=" + i;
+          a.innerHTML="Program " + i;
+          programContainer.appendChild(a);
+        }
+
+        //pjs
+        var programs = localStorage.getItem("PJSPrograms");
+        if(!programs)return false;
+
+        var programContainer=document.getElementById("PJSPrograms");
+
+        programs = programs.split("|");
+        for(var i=0; i<programs.length; i++){
+          var a = document.createElement("a");
+          a.href="pjs.html?program=" + i;
+          a.innerHTML="Program " + i;
+          programContainer.appendChild(a);
+        }
+      }
+    </script>
+  </body>
+</html>

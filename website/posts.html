@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Posts</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="parts/common.css">
+    <style>
+      .navbar a[nav=posts]{
+        background:gray;
+      }
+      .box{
+        border:1px solid lightgray;
+        border-radius:5px;
+        padding:10px 20px;
+        width:100%;
+        margin-bottom:20px;
+      }
+      h1, h3{
+        margin:0px;
+      }
+      h1{font-size:50px;}
+      a{
+        text-decoration:none;
+        color:blue;
+        cursor:pointer;
+      }
+      a:hover{
+        text-decoration:underline;
+      }
+    </style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body>
+    <script src="/website/parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <h1 id="username">Posts</h1>
+        <a href="createPost.html">New post</a>
+        <br>
+      </div>
+    </div>
+    <script>
+      var content = document.getElementById("content")
+      fetch("https://server.thingmaker.repl.co/posts").then(r => r.json()).then(data => {
+        data.forEach(r => {
+          content.innerHTML += `<div class="box"><a href="post.html?id=${r.id}">${r.title}</a><br>by <a href="user.html?user=${r.username}">${r.username}</a></div>`
+        })
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en"><head>
+<title>My website</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="parts/common.css">
+<style>
+/* Header/logo Title */
+.header {
+  padding: 80px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+}
+
+/* Increase the font size of the heading */
+.header h1 {
+  font-size: 40px;
+}
+
+/* Style the top navigation bar */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+}
+
+/* Style the navigation bar links */
+.navbar a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+}
+
+/* Right-aligned link */
+.navbar a.right {
+  float: right;
+}
+
+.navbar a.current{
+  background:gray;
+}
+
+/* Change color on hover */
+.navbar a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Column container */
+.row {  
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+}
+
+/* Create two unequal columns that sits next to each other */
+/* Sidebar/left column */
+.side {
+  -ms-flex: 30%; /* IE10 */
+  flex: 30%;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+/* Main column */
+.main {   
+  -ms-flex: 70%; /* IE10 */
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+
+/* Fake image, just for this example */
+.fakeimg {
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 700px) {
+  .row {   
+    flex-direction: column;
+  }
+}
+
+/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+@media screen and (max-width: 400px) {
+  .navbar a {
+    float: none;
+    width: 100%;
+  }
+}
+
+
+/* Style the search box */
+#mySearch {
+  width: 100%;
+  font-size: 18px;
+  padding: 11px;
+  border: 1px solid #ddd;
+}
+
+/* Style the navigation menu */
+#myMenu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style the navigation links */
+#myMenu li a {
+  padding: 12px;
+  text-decoration: none;
+  color: black;
+  display: block
+}
+
+#myMenu li a:hover {
+  background-color: #eee;
+}
+
+#cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 10%;
+  right: 10%;
+  width: 80%;
+  padding: 5px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eee;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+#cookie-banner .close {
+  height: 20px;
+  background-color: #777;
+  border: none;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+</style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+
+</head>
+<body>
+
+<div class="header">
+  <h1>My Website</h1>
+  <p>A website created by me.</p>
+</div>
+
+<div class="navbar">
+  <a href="website.html" class="current">Home</a>
+  <a href="posts.html">Posts</a>
+  <a href="https://Minekhan.thingmaker.repl.co">MineKhan</a>
+  <div id="adminNav"></div>
+
+  <a href="login.html" class="right" id="loggedIn">Login</a>
+  <a class="right" id="notifs" href="/website/notifs.html">Notifications</a>
+  <script src="parts/loggedIn.js"></script>
+</div>
+
+<div class="row">
+  <div class="side">
+<input type="text" id="mySearch" onkeyup="searchResult()" placeholder="Search.." title="Type in a category">
+
+<ul id="myMenu">
+  <li><a href="Adder.html">Binary adder</a></li>
+  <li><a href="programBrowser.html">Program browser</a></li>
+  <li><a href="code editor/Programs.html">My Programz</a></li>
+  <li><a href="scratchjs.html">Scratch to javascript converter</a></li>
+  <li><a href="random.html">Randomizer</a></li>
+  <li><a href="https://minekhan.thingmaker.repl.co">My version of MineKhan</a></li>
+  <li><a href="https://fullscreenOS.thingmaker.repl.co">Fullscreen OS by Me</a></li>
+  <li><a href="https://multiplayer.thingmaker.repl.co">Multiplayer drawing</a></li>
+  <li><a href="https://platformer.thingmaker.repl.co">Platformer</a></li>
+  <li><a href="https://dino.thingmaker.repl.co">dino</a></li>
+<script>
+function searchResult() {
+  // Declare variables
+  var input, filter, ul, li, a, i;
+  input = document.getElementById("mySearch");
+  filter = input.value.toUpperCase();
+  ul = document.getElementById("myMenu");
+  li = ul.getElementsByTagName("li");
+
+  // Loop through all list items, and hide those who don't match the search query
+  for (i = 0; i < li.length; i++) {
+    a = li[i].getElementsByTagName("a")[0];
+    if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+      li[i].style.display = "";
+    } else {
+      li[i].style.display = "none";
+    }
+  }
+}
+</script>
+</ul>
+  </div>
+  <div class="main">
+    <h2>Websites you may not have even known exsisted!</h2>
+    <a href="http://geeky-people.herokuapp.com/">GEEKYPEOPLE</a><br>
+    <a href="http://16f81.csb.app">Minecraft | Javascript Edition</a><br>
+    <a href="https://mordritch.com/">Modritch.com</a><br>
+
+    <h2>Website Stats</h2>
+    <span id="users"></span>
+    <a id="showUsers" style="display:none;">Show</a><br>
+    <span id="posts"></span><br>
+    <span id="worlds"></span>
+  </div>
+</div>
+
+<div id="cookie-banner" style="display: none">
+  <p>
+    This website uses cookies to keep you signed in.<br>
+    By using this website, you agree to allow cookies.<br>
+    Click &times; to close and don't show again.
+  </p>
+  <button class="close">&times;</button>
+</div>
+<script>
+  if (localStorage.getItem("cookieSeen") !== "true") {
+    document.querySelector("#cookie-banner").style.display = ""
+  };
+  document.querySelector("#cookie-banner .close").onclick = () => {
+    document.querySelector("#cookie-banner").style.display = "none"
+    localStorage.setItem("cookieSeen","true")
+  }
+</script>
+
+<script>
+  fetch("https://server.thingmaker.repl.co/users").then(r => r.json()).then(r => {
+    var el=document.querySelector("#users")
+    el.innerHTML = "There are currently "+r.length+" users."
+    var show = document.querySelector("#showUsers")
+    show.style.display = ""
+    show.onclick = () => {
+      show.style.display = "none"
+      for(var i=0; i<r.length; i++){
+        r[i] = r[i].replace("user:", '')
+        r[i] = "<a href='user.html?user="+r[i]+"'>"+r[i]+"</a>"
+      }
+      el.innerHTML = "Users:<br>"+r.join("<br>")
+    }
+  })
+  fetch("https://server.thingmaker.repl.co/posts").then(r => r.json()).then(r => {
+    document.querySelector("#posts").innerHTML = "There are currently "+r.length+" posts."
+  })
+  fetch("https://server.thingmaker.repl.co/worlds").then(r => r.json()).then(r => {
+    document.querySelector("#worlds").innerHTML = "There are currently "+r.length+" worlds."
+  })
+</script>
+
+<script src="parts/footer.js"></script>
+</body></html>

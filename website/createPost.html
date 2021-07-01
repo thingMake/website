@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Post</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="parts/common.css">
+    <style>
+      #contentBG{
+        height:calc(100% - 47px);
+      }
+      #content{
+        height:100%;
+      }
+      h1{
+        font-size:50px;
+        margin:0px;
+      }
+      #title{
+        width:100%;
+        padding:10px 20px;
+        font-size:30px;
+      }
+      #postContent{
+        resize:vertical;
+        width:100%;
+        height:40%;
+        font-family:inherit;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body>
+    <script src="/website/parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <h1>Create a new post</h1>
+        <input id="title" placeholder="Title of post">
+        <br><br>
+        <textarea id="postContent" placeholder="Content of post..."></textarea>
+        <pre id="error" style="color:red;"></pre>
+
+        <button onclick="post()">Create post</button>
+      </div>
+    </div>
+    <script>
+      var error = document.getElementById("error")
+      function post(){
+        var title = document.getElementById("title").value
+        var content = document.getElementById("postContent").value
+        fetch("https://server.thingmaker.repl.co/post",{
+          method: "POST",
+          credentials: 'include',
+          body: JSON.stringify({title:title, content:content})
+        }).then(res => res.json()).then(res => {
+          if(res.success){
+            location.href = res.redirect
+          }else{
+            error.innerHTML = res.message
+          }
+        }).catch(alert)
+      }
+    </script>
+  </body>
+</html>
