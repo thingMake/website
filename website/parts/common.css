@@ -1,3 +1,12 @@
+:root{
+  --black:#1B262C;
+  --blue:#0F4C81;
+  --red:#ED6663;
+  --orange:#FFA372;
+  --theme:#FFA372;
+  --teal:#1abc9c;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -10,16 +19,32 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
 }
+body[theme=dark]{
+  color:#ddd;
+}
+body[theme=dark] ::selection{
+  background:#00a;
+  color:white;
+}
+body[theme2=glow], body[theme2=glow] input, body[theme2=glow] textarea{
+  text-shadow:0 0 8px #fff;
+}
 
 #contentBG{
   background:#eee;
   padding:0px 10%;
   min-height:calc(100% - 47px);
 }
+body[theme=dark] #contentBG{
+  background:#222;
+}
 #content{
   background:white;
   padding:10px 20px;
   height:100%;
+}
+body[theme=dark] #content{
+  background:#333;
 }
 h1, h3{
   margin:0px;
@@ -31,6 +56,12 @@ a{
   color:blue;
   cursor:pointer;
 }
+body[theme=dark] a{
+  color:#88f;
+}
+body[theme2=glow] a{
+  text-shadow:0 0 8px #00f;
+}
 a[disabled]{
   color:gray !important;
 }
@@ -38,21 +69,30 @@ a:hover{
   text-decoration:underline;
 }
 
-input, textarea{
+input:not(.notText), textarea{
   border:1px solid gray;
   padding:10px 15px;
   background:white;
   transition:0.6s ease;
 }
+body[theme=dark] input:not(.notText), body[theme=dark] textarea{
+  background:#222;
+  color:#eee;
+}
+body[theme=dark] input:not(.notText)::placeholder, body[theme=dark] textarea::placeholder{
+  color:#aaa;
+}
 input.round{border-radius:40px;}
 input.small{padding:2px;}
-input:focus, textarea:focus{
-  background:#eef;
+input:not(.notText):focus, textarea:focus{
   outline:none;
   box-shadow: 0 0 3pt 2pt #aaf;
 }
 input[disabled], textarea[disabled]{
   background:#ddd;
+}
+body[theme=dark] input[disabled], body[theme=dark] textarea[disabled]{
+  background:#855;
 }
 
 button{
@@ -65,3 +105,21 @@ button{
   cursor:pointer;
   vertical-align:middle;
 }
+
+.skeletonText{
+  display:inline-block;
+  width:10%;
+  animation:3s ease skeletonText infinite;
+}
+@keyframes skeletonText{
+  0%{background:#eee;}
+  30%{background:#ccc;}
+  60%{background:#eee;}
+  100%{background:#eee;}
+}
+.skeletonText.longSkeleton{
+  width:30%;
+}
+
+.hidden{display:none;}
+.block{display:block;}

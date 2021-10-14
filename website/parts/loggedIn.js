@@ -44,11 +44,21 @@ loggedIn().then(data => {
       if(r.admin){
         document.querySelector("#adminNav").innerHTML = `
 <a href="/website/admin/users.html">Users</a>
+<a href="/website/admin/log.html">Log</a>
 `
       }
     }
   })
-}).catch(console.log)
+}).catch(function(e){
+  console.log(e)
+  var div = document.createElement("div")
+  div.style.padding = "10px"
+  div.style.background = "var(--red)"
+  div.style.borderBottom = "1px solid black"
+  div.style.boxShadow = "0px 0px 15px 3px black"
+  div.innerHTML = "Something went wrong when fetching"
+  document.body.prepend(div)
+})
 /*
 var logged = getCookie("username")
 if(logged){

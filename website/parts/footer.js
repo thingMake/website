@@ -1,7 +1,7 @@
 var div = document.createElement("div")
 div.innerHTML = `
 <div>
-  <b>Contact the author</b>
+  <b>Contact the website's maker</b>
   <ul>
     <li><a href="https://scratch.mit.edu/users/2-people">Scratch</a></li>
     <li><a href="https://replit.com/@thingMaker">Replit</a></li>
@@ -30,6 +30,9 @@ style.innerHTML = `
   justify-content:center;
   flex-direction:row;
 }
+body[theme=dark] .footer{
+  background:#171717;
+}
 .footer > div{
   margin:0px 20px;
 }
@@ -40,13 +43,6 @@ style.innerHTML = `
 }
 .footer > div > ul li{
   margin:10px 0px;
-}
-.footer > div > ul a{
-  color:blue;
-  text-decoration:none;
-}
-.footer > div > ul a:hover{
-  text-decoration:underline;
 }
 .footer > div{
   text-align:center;

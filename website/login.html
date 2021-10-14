@@ -8,11 +8,11 @@
       #contentBG{
         background:#eee;
         padding:5% 10%;
-        height:calc(100% - 47px);
+        min-height:calc(100% - 47px);
       }
       #content{
         background:white;
-        height:100%;
+        min-height:calc((100vh - 47px) * 0.75);
         display:flex;
         flex-direction:row;
         padding:0px;
@@ -69,11 +69,18 @@
         <div id="left"><h1>Login<br>Register</h1></div>
         <div id="right">
           <h2>Login to my website</h2>
+          <form>
           <label for="username">Username</label><br>
           <input id="username" type="username" class="round">
           <br><br>
+          <label for="email">Email (optional, only for registering, for password reset)</label><br>
+          <input id="email" type="email" class="round">
+          <br><br>
           <label for="password">Password</label><br>
-          <input id="password" type="password" class="round">
+          <input id="password" type="password" class="round" autocomplete="current-password">
+          <br><br>
+          </form>
+          <a onclick="forgotPassword()">Forgot password?</a>
           <pre id="error" style="color:red;"></pre><br>
 
           <button onclick="login()">Login</button><br><br>
@@ -93,10 +100,14 @@
       }
       window.onbeforeunload = postCanceled
 
+      var usernameEl = document.getElementById("username")
+      var passwordEl = document.getElementById("password")
+      var emailEl = document.querySelector("#email")
       var error = document.getElementById("error")
+
       function login(){
-        var username = document.getElementById("username").value
-        var password = document.getElementById("password").value
+        var username = usernameEl.value
+        var password = passwordEl.value
         if(username === "") {
           error.innerHTML = "Please enter username."
           return
@@ -115,20 +126,16 @@
         }).catch(alert)
       }
       function register(){
-        var username = document.getElementById("username").value
-        var password = document.getElementById("password").value
+        var username = usernameEl.value
+        var password = passwordEl.value
         if(username === "") {
           error.innerHTML = "Please enter username."
-          return
-        }
-        if(username.includes("/")){
-          error.innerHTML = 'Username cannot contain "/"'
           return
         }
         fetch("https://server.thingmaker.repl.co/register",{
           method: "POST",
           credentials: 'include',
-          body: JSON.stringify({username: username, password:password})
+          body: JSON.stringify({username: username, password:password, email:emailEl.value || null})
         }).then(res => res.json()).then(res => {
           if(res.success){
             postLogged(username)
@@ -137,6 +144,24 @@
             error.innerHTML = res.message
           }
         }).catch(alert)
+      }
+
+      function forgotPassword(){
+        var username = usernameEl.value
+        if(!username){
+          return error.innerHTML = "Please type your username first."
+        }
+        fetch("https://server.thingmaker.repl.co/resetPwd",{
+          credentials:'include',
+          method:'POST',
+          body: JSON.stringify({username:username})
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            error.innerHTML = "<span style='coloe:green'>Check your email</span>"
+          }else{
+            error.innerHTML = r.message
+          }
+        })
       }
     </script>
   </body>

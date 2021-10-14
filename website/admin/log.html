@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Log</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/website/parts/common.css">
+    <style>
+      #log{
+        width:100%;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body>
+    <script src="/website/parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <h1>Log</h1>
+        <div id="log"></div>
+        <button onclick="load()">Reload</button>
+      </div>
+    </div>
+    <script>
+      var log = document.querySelector("#log")
+      function load(){
+        fetch("https://server.thingmaker.repl.co/log").then(r=>r.text()).then(r => {
+          log.innerHTML = r
+        }).catch(e => {
+          log.innerHTML = e
+        })
+      }
+      load()
+    </script>
+  </body>
+</html>

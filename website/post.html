@@ -15,6 +15,7 @@
       #options{
         vertical-align:middle;
       }
+      /*start here*/
       #comment-area{
         border:1px solid gray;
         overflow:auto;
@@ -25,6 +26,9 @@
         padding-bottom:0;
         margin-bottom:10px;
         border-bottom:1px solid gray;
+      }
+      body[theme=dark] #comment-nav{
+        background:#444;
       }
       #comment-nav > div{
         padding:10px;
@@ -40,6 +44,10 @@
         border-bottom:1px solid white;
         position:relative;
         top:1px;
+      }
+      body[theme=dark] #comment-nav > div.selected{
+        background:#333;
+        border-bottom:#333;
       }
       #comment-area button{
         float:right;
@@ -68,6 +76,9 @@
         display:flex;
         flex-flow: row wrap;
       }
+      body[theme=dark] #comment-format{
+        background:#333;
+      }
       #comment-format > div{
         padding:4px;
         cursor:pointer;
@@ -78,6 +89,9 @@
       #comment-format > div:hover{
         background:#eee;
       }
+      body[theme=dark] #comment-format > div:hover{
+        background:#111;
+      }/*end here*/
 
       .comment{
         border:1px solid gray;
@@ -87,6 +101,9 @@
         background:#f5f5f5;
         padding:10px;
         display:block;
+      }
+      body[theme=dark] .comment .top{
+        background:#444;
       }
       .comment .user{
         vertical-align:middle;
@@ -106,9 +123,21 @@
       .comment .commentCotent{
         margin:20px;
       }
+      .right{float:right;}
 
       .navbar a[nav=posts]{
         background:gray;
+      }
+
+      #timestamp{color:gray}
+
+      @keyframes flash{
+        from{background:#ff0a;}
+        to{}
+      }
+
+      #postContent{
+        margin:16px 0;
       }
     </style>
 
@@ -127,15 +156,17 @@
     <div id="contentBG">
       <div id="content">
         <a href="posts.html">&lt; Back to all posts</a>
-        <h1 id="title">Title</h1>
-        <h3 id="by"></h3>
+        <div id="loading">Loading...</div>
+        <h1 id="title" class="skeletonText block longSkeleton">&nbsp;</h1>
+        <div id="timestamp"></div>
+        <h3 id="by" class="skeletonText block">&nbsp;</h3>
         <div id="right">
           <button id="follow"></button>
           <div id="options"></div>
         </div>
-        <p id="postContent"></p>
+        <div id="postContent" class="format"></div>
 
-        <h3>Comments</h3>
+        <h3 id="commentsHeader">Comments</h3>
         <i style="color:gray;">The comments are live.</i>
         <br><br>
         <div id="comment-area">
@@ -146,9 +177,9 @@
           <textarea id="comment" placeholder="Write a comment..."></textarea>
           <div id="comment-previewBox" class="format" style="display:none;"></div>
           <div id="comment-format">
-            <input type="file" id="upload" onchange="uploadIt(this.files[0], this.type==='image'?'img':this.type)" style="display:none;">
-            <div onclick="upload.accept='image/*'; upload.click()">Image</div>
-            <div onclick="upload.accept='video/*'; upload.click()">Video</div>
+            <input type="file" id="upload" onchange="uploadIt(this.files[0], this.getAttribute('mediaType'))" style="display:none;">
+            <div onclick="upload.accept='image/*'; upload.setAttribute('mediaType', 'img'); upload.click()">Image</div>
+            <div onclick="upload.accept='video/*'; upload.setAttribute('mediaType', 'video'); upload.click()">Video</div>
             <div onclick="addToComment(`<img src='${prompt(&quot;URL for image&quot;)}'>`)">Image from web</div>
             <div onclick="addToComment(`<video controls src='${prompt(&quot;URL for video&quot;)}'></video>`)">Video from web</div>
             <div onclick="addToComment('<h1>Heading</h1>')">Heading 1</div>
@@ -161,6 +192,8 @@
             <div onclick="addToComment('<ul><li>one</li><li>two</li><li>three</li></ul>')">List</div>
             <div onclick="addToComment('<ol><li>one</li><li>two</li><li>three</li></ol>')">Numbered list</div>
             <div onclick="addToComment(`<a href='${prompt(&quot;URL for link&quot;)}'>Link</a>`)">Link with custom text</div>
+            <div onclick='addToComment(`<pre codeType="javascript">//Code here</pre>`)'>Code</div>
+            <div onclick='addToComment(`<pre codeType="javascript" inline>//Code here</pre>`)'>Inline Code</div>
           </div>
           <button onclick="comment()">Post</button>
           <pre id="error" style="color:red;"></pre>
@@ -202,28 +235,48 @@
       }
 
       function fetchPost(){
+      var postData
       fetch("https://server.thingmaker.repl.co/post/"+id).then(r => r.json()).then(d => {
+        var s = document.querySelectorAll(".skeletonText")
+        for(var i=0; i<s.length; i++){
+          s[i].classList.remove("skeletonText")
+        }
+        document.querySelector("#loading").classList.add("hidden")
+
+        postData = d
+
         document.title = "Post: "+d.title
         document.querySelector("#title").innerHTML = d.title
+        document.querySelector("#timestamp").innerHTML = convertUTCDateToLocalDate(d.timestamp)
         document.querySelector("#by").innerHTML = "by <a href='user.html?user="+d.username+"'>"+d.username+"</a>"
-        document.querySelector("#postContent").innerHTML = format(d.content, "postContent")
+        document.querySelector("#postContent").innerHTML = format(d.content)
 
         var comments = d.comments || []
+        commentsHeader.innerHTML += " ("+comments.length+")"
         commentEl.innerHTML = ""
         for(var i=0; i<comments.length; i++){
           var c = comments[i]
+          if(c.hide) continue //skip to next iteration
           var id = "comment"+c.id
           commentEl.innerHTML += "<div class='comment' id='"+id+"'>"
           +"<div class='top'><a class='user' href='user.html?user="+c.username+"'>"
-          +(c.pfp ? "<img class='pfp' src='"+c.pfp+"'>" : "")
-          +c.username+"</a></div>"
-          +"<div class='commentCotent format'>"+format(c.comment, id)+"</div></div>"
+          +"<img class='pfp' src='"+(c.pfp || ("https://server.thingmaker.repl.co/pfp/"+c.username))+"'>"
+          +"<span class='username'>"+c.username+"</span></a></div>"
+          +"<div class='commentCotent format'>"+format(c.comment)+"</div></div>"
+        }
+
+        if(location.hash[0] === "#"){
+          setTimeout(() => {
+            var el = document.querySelector(location.hash)
+            if(el) el.scrollIntoView({block:"center"})
+            el.style.animation = "1s linear flash"
+          }, 10)
         }
 
         fetch("https://server.thingmaker.repl.co/account", {credentials:"include"}).then(r => r.json()).then(r => {
           if(!r) return
           myUsername = r.username
-          if(d.username === myUsername || r.admin){
+          if(d.username === myUsername || r.admin || postData.username === muUsername){
             document.querySelector("#options").innerHTML = `<a>Edit</a>&nbsp;&nbsp;
             <a onclick="deletePost()">Delete</a>`
           }
@@ -231,6 +284,16 @@
             follow(d.followers.includes(myUsername), true)
           }else{
             follow(false, true)
+          }
+
+          var comments = document.querySelectorAll("div.comment") //avoid selecting prism code comment
+          for(var i=0; i<comments.length; i++){
+            var c = comments[i]
+            var t = c.querySelector(".top")
+            var u = t.querySelector(".username").innerHTML
+            if(r.admin || u === myUsername){
+              t.innerHTML += `<a onclick="deleteComment('${c.id}')" class="right">Delete</a>`
+            }
           }
         })
       })
@@ -249,7 +312,7 @@
         }).then(r => r.json()).then(r => {
           if(r.success){
             var id = "comment"+r.id
-            document.querySelector("#comments").innerHTML += "<div class='comment' id='"+id+"'><div class='top'><a class='user' href='user.html?user="+myUsername+"'>"+myUsername+"</a></div><div class='commentCotent format'>"+format(c, id)+"</div></div>"
+            document.querySelector("#comments").innerHTML += "<div class='comment' id='"+id+"'><div class='top'><a class='user' href='user.html?user="+myUsername+"'>"+myUsername+"</a></div><div class='commentCotent format'>"+format(c)+"</div></div>"
             commentBox.value = ""
             previewBox.innerHTML = ""
           }else{
@@ -261,9 +324,9 @@
         var id = "comment"+data.id
         commentEl.innerHTML += "<div class='comment' id='"+id+"'>"
         +"<div class='top'><a class='user' href='user.html?user="+data.username+"'>"
-        +(data.pfp ? "<img class='pfp' src='"+data.pfp+"'>" : "")
+        +"<img class='pfp' src='"+(data.pfp || "https://server.thingmaker.repl.co/pfp/"+data.username)+"'>"
         +data.username+"</a></div>"
-        +"<div class='commentCotent format'>"+format(data.comment, id)+"</div></div>"
+        +"<div class='commentCotent format'>"+format(data.comment)+"</div></div>"
       }
 
       var ws
@@ -280,6 +343,9 @@
           let packet = JSON.parse(msg.data)
           if(packet.type === "comment"){
             addComment(packet.data)
+          }
+          if(packet.type === "deleteComment"){
+            document.getElementById("comment"+packet.data).style.display = "none"
           }
         }
         ws.onclose = function(){
@@ -342,13 +408,37 @@
           }
         }).then(r => r.json())
         if(res.success){
-          addToComment("<"+(type || "img")+" src='"+res.url+"'"+(type==="video"?"controls":"")+">")
+          addToComment("<"+(type || "img")+" src='"+res.url+"'"+(type==="video"?"controls":"")+"/>")
         }else alert(res.message)
       }
 
       function addToComment(str){
         commentBox.value += str
         previewBox.innerHTML = format(commentBox.value, previewBox.id)
+      }
+
+      function deleteComment(cid){
+        var c = document.getElementById(cid)
+        fetch("https://server.thingmaker.repl.co/deletePostComment/"+id, {
+          credentials:'include',
+          method: 'POST',
+          body: JSON.stringify({cid: cid.replace("comment",''), userId:userId})
+        }).then(d => d.text()).then(d => {
+          if(d === "error") return alert("error")
+          c.style.display = "none"
+        })
+      }
+
+      function convertUTCDateToLocalDate(date) {
+        date = new Date(date)
+        var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+        var offset = date.getTimezoneOffset() / 60;
+        var hours = date.getHours();
+
+        newDate.setHours(hours - offset);
+
+        return newDate.toLocaleString();
       }
     </script>
   </body>

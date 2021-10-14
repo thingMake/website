@@ -16,6 +16,9 @@
         background:#fafafa;
         width:50%;
       }
+      body[theme=dark] .box{
+        background:#252525;
+      }
       .box h2, .box h3{
         margin:0px;
         margin-bottom:10px;
@@ -25,7 +28,6 @@
         height:150px;
         background:lightgray;
         background-repeat: no-repeat;
-        background-attachment: fixed;
         background-position: center;
         background-size: cover;
       }
@@ -37,9 +39,12 @@
         padding:10px;
         height:calc(100% - 47px);
       }
+      body[theme=dark] #notExsist{
+        background:#222;
+      }
       #content{
         height:100%;
-        background:transparent;
+        background:transparent !important;
       }
       h1{
         margin:10px 0px;
@@ -57,6 +62,9 @@
         background:white;
         padding:10px 20px;
         overflow: auto;
+      }
+      body[theme=dark] #top{
+        background:#333;
       }
       #bio{
         display:block;
@@ -87,7 +95,10 @@
       </div>
       <div id="content">
         <div id="boxs">
-          <div class="box" id="posts"><h2>Posts</h2></div>
+          <div class="box" id="posts">
+            <h2>Posts</h2>
+            <span class="skeletonText" style="width:30%;">&nbsp;</span>
+          </div>
         </div>
       </div>
     </div>
@@ -115,8 +126,9 @@
           document.getElementById("BGImg").style.backgroundImage = "url('"+data.bg+"')"
         }
         if(data.timestamp){
+          var time = convertUTCDateToLocalDate(data.timestamp)
           document.querySelector("#info").innerHTML = `
-          Account created: ${new Date(data.timestamp).toUTCString()}
+          Account created: ${time}
           `
         }
         if(data.bio){
@@ -128,6 +140,7 @@
         credentials: "include"
       }).then(r => r.json()).then(data => {
         var el = document.getElementById("posts")
+        el.querySelector(".skeletonText").remove()
         if(data.length === 0){
           el.innerHTML += "<span style='color:gray;'>They don't have any posts.</span>"
           return
@@ -136,6 +149,18 @@
           el.innerHTML += `<a href="post.html?id=${r.id}">${r.title}</a><br>`
         })
       })
+
+      function convertUTCDateToLocalDate(date) {
+        date = new Date(date)
+        var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+        var offset = date.getTimezoneOffset() / 60;
+        var hours = date.getHours();
+
+        newDate.setHours(hours - offset);
+
+        return newDate.toLocaleString();
+      }
     </script>
   </body>
 </html>

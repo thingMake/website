@@ -31,6 +31,11 @@
       .selected{
         background:yellow;
       }
+
+      hr{
+        margin:30px 0;
+        border:2px outset #aaa;
+      }
     </style>
   </head>
   <body>
@@ -38,13 +43,13 @@
     <div id="contentBG">
       <div id="content">
         <h1>Awesome Randomizer!</h1>
-        <span id="number">The random number from 0 to 1</span><br><br>
+        <span id="number">The random number from 0 to 1</span><hr>
         <h3>Choose your minimum and maximum</h3>
         <label for="min">Min: </label>
         <input id="min" type="number"><br>
         <label for="max">Max: </label>
         <input id="max" type="number"><br>
-        <span id="minmaxnum">The random number between min and max</span><br><br>
+        <span id="minmaxnum">The random number between min and max</span><hr>
         <h3>Pick a random thing from a list</h3>
         <table id="list">
           <thead>
@@ -55,9 +60,7 @@
           </thead>
           <tbody></tbody>
         </table><br>
-        <span id="listRes">The one picked from the list</span><br>
-
-        <br>
+        <span id="listRes">The one picked from the list</span><hr>
         <button onclick="main()">Randomize!</button>
       </div>
     </div>
@@ -100,7 +103,9 @@
       updateList()
       function addListInput(){
         var a = document.querySelector("#newListItemLink")
-        a.outerHTML = `<input placeholder="New Item" onblur="addListItem(this.value)">`
+        a.outerHTML = `<input id="newListItemInput" placeholder="New Item" onkeydown="if(event.key==='Enter') addListItem(this.value)">`
+        a = document.querySelector("#newListItemInput")
+        a.focus()
       }
       function addListItem(v){
         list.push(v)
