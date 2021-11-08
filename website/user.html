@@ -99,6 +99,10 @@
             <h2>Posts</h2>
             <span class="skeletonText" style="width:30%;">&nbsp;</span>
           </div>
+          <div class="box">
+            <h2>Skin</h2>
+            <canvas id="skinCanv" style="display:block;width:160px;height:320px;image-rendering:pixelated;border:1px solid black;"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -134,7 +138,32 @@
         if(data.bio){
           document.querySelector("#bio").innerHTML = "<b>@"+username+"</b> - "+data.bio
         }
+
+        if(data.skin){
+          setSkin(data.skin)
+        }
       })
+
+      var skinCanv = document.querySelector("#skinCanv")
+      function setSkin(url){
+        var image = new Image()
+        image.onload = function(){
+          if(image.width === 64 && image.height === 64){
+            skinCanv.width = 16
+            skinCanv.height = 32
+            var ctx = skinCanv.getContext("2d")
+            ctx.drawImage(image,8,8,8,8, 4,0,8,8)
+            ctx.drawImage(image,44,20,4,12, 0,8,4,12)
+            ctx.drawImage(image,36,52,4,12, 12,8,4,12)
+            ctx.drawImage(image,20,20,8,12, 4,8,8,12)
+            ctx.drawImage(image,4,20,4,12, 4,20,4,12)
+            ctx.drawImage(image,20,52,4,12, 8,20,4,12)
+          }else{
+            alert("That's not a skin, silly.")
+          }
+        }
+        image.src = url
+      }
 
       fetch('https://server.thingmaker.repl.co/posts/'+username,{
         credentials: "include"

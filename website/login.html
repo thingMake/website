@@ -157,7 +157,7 @@
           body: JSON.stringify({username:username})
         }).then(r => r.json()).then(r => {
           if(r.success){
-            error.innerHTML = "<span style='coloe:green'>Check your email</span>"
+            error.innerHTML = "<span style='color:green'>Check your email</span>"
           }else{
             error.innerHTML = r.message
           }

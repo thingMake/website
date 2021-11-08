@@ -11,6 +11,13 @@ navbar.innerHTML=`
   <div id="adminNav"></div>
 
   <a class="right" id="loggedIn" href="/website/login.html">Log in</a>
+  <div class="dropdown" id="usernameDropdown" style="display:none; float:right;">
+    <a class="dropdown-name"></a>
+    <div class="dropdown-content">
+      <a href="/website/account.html">Account</a>
+      <a id="usernameDropdown-profile">Profile</a>
+    </div>
+  </div>
   <a class="right" id="notifs" href="/website/notifs.html">Notifications</a>
 `
 document.body.appendChild(navbar)
@@ -70,6 +77,30 @@ body[theme=dark] .navbar a{
 }
 body[theme=dark] .navbar a:hover{
   background:#111;
+}
+.navbar .dropdown{
+  display:inline-block;
+  background:inherit;
+}
+.navbar .dropdown > a{
+  display:block;
+}
+.navbar .dropdown .dropdown-name{
+  
+}
+.navbar .dropdown .dropdown-content{
+  display:none;
+  position:absolute;
+  z-index:1;
+  background:inherit;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+.navbar .dropdown .dropdown-content a{
+  display:block;
+  width:100%;
+}
+.navbar .dropdown:hover .dropdown-content{
+  display:block;
 }
 `
 document.head.appendChild(style)

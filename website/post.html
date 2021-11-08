@@ -235,15 +235,12 @@
       }
 
       function fetchPost(){
-      var postData
       fetch("https://server.thingmaker.repl.co/post/"+id).then(r => r.json()).then(d => {
         var s = document.querySelectorAll(".skeletonText")
         for(var i=0; i<s.length; i++){
           s[i].classList.remove("skeletonText")
         }
         document.querySelector("#loading").classList.add("hidden")
-
-        postData = d
 
         document.title = "Post: "+d.title
         document.querySelector("#title").innerHTML = d.title
@@ -276,7 +273,7 @@
         fetch("https://server.thingmaker.repl.co/account", {credentials:"include"}).then(r => r.json()).then(r => {
           if(!r) return
           myUsername = r.username
-          if(d.username === myUsername || r.admin || postData.username === muUsername){
+          if(d.username === myUsername || r.admin){
             document.querySelector("#options").innerHTML = `<a>Edit</a>&nbsp;&nbsp;
             <a onclick="deletePost()">Delete</a>`
           }
@@ -291,7 +288,7 @@
             var c = comments[i]
             var t = c.querySelector(".top")
             var u = t.querySelector(".username").innerHTML
-            if(r.admin || u === myUsername){
+            if(r.admin || u === myUsername || d.username === myUsername){
               t.innerHTML += `<a onclick="deleteComment('${c.id}')" class="right">Delete</a>`
             }
           }

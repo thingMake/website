@@ -88,6 +88,7 @@
             <li><a href="#options">Options</a></li>
             <li><a href="#pfp">Profile picture</a></li>
             <li><a href="#bio">Bio</a></li>
+            <li><a href="#skin">Skin</a></li>
             <li><a href="#theme">Theme</a></li>
           </ul>
         </div>
@@ -126,6 +127,15 @@
             <button onclick="saveBio()">Save</button>
             <span id="bioInfo"></span>
           </div>
+          <div class="box" id="skin">
+            <h3>Your wonderful skin for MineKhan:</h3>
+            <canvas id="skinCanv" style="display:block;width:160px;height:320px;image-rendering:pixelated;border:1px solid black;"></canvas><br>
+            <label for="changeSkin">Upload a skin:</label>
+            <input type="file" id="changeSkin" accept=".png"><br><br>
+            <a href="https://www.minecraftskins.com/skin-editor/" target="_blank">Make a skin</a><br>
+            Can't decide what skin to make? Click <a href="https://www.minecraftskins.com/" target="_blank">here</a><br><br>
+            Note: This only supports classic skins.
+          </div>
           <div class="box" id="theme">
             <h3>Theme</h3>
             <input type="radio" id="themeNormal" name="theme" value="normal" onclick="setTheme(this.value)" class="notText">
@@ -159,6 +169,7 @@
           document.querySelector("#pfp #pfpImg").src = data.pfp
           document.querySelector("#pfp #bg").src = data.bg
           document.querySelector("#bioBox").value = data.bio || ""
+          if(data.skin) setSkin(data.skin)
         })
 
         function logout(){
@@ -254,6 +265,48 @@
               document.querySelector("#bioInfo").innerHTML = "Success!"
             }else document.querySelector("#bioInfo").innerHTML = r.message
           })
+        }
+
+        var skinUpload = document.querySelector("#changeSkin")
+        var skinCanv = document.querySelector("#skinCanv")
+        var fr = new FileReader()
+        skinUpload.onchange = function(){
+          fr.onload = function(){
+            fetch("https://server.thingmaker.repl.co/changeSkin",{
+              credentials:'include',
+              method:"POST",
+              body:JSON.stringify({
+                skin: fr.result
+              })
+            }).then(r => r.json()).then(data => {
+              if(data.success){
+                setSkin(fr.result)
+              }else{
+                alert(data.message)
+              }
+            })
+          }
+          fr.readAsDataURL(skinUpload.files[0])
+        }
+        function setSkin(url){
+          var image = new Image()
+          image.onload = function(){
+            if(image.width === 64 && image.height === 64){
+              skinCanv.width = 16
+              skinCanv.height = 32
+              var ctx = skinCanv.getContext("2d")
+              ctx.drawImage(image,8,8,8,8, 4,0,8,8)
+              ctx.drawImage(image,44,20,4,12, 0,8,4,12)
+              ctx.drawImage(image,36,52,4,12, 12,8,4,12)
+              ctx.drawImage(image,20,20,8,12, 4,8,8,12)
+              ctx.drawImage(image,4,20,4,12, 4,20,4,12)
+              ctx.drawImage(image,20,52,4,12, 8,20,4,12)
+            }else{
+              alert("That's not a skin, silly.")
+            }
+          }
+          image.onerror = () => alert("Skin corrupted!")
+          image.src = url
         }
 
         function setTheme(theme){

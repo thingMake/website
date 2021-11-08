@@ -34,8 +34,17 @@ loggedIn().then(data => {
   data.json().then(r => {
     var logged = typeof r === "object" ? r.username : null
     if(el && logged){
-      el.innerHTML = logged
-      el.href = "/website/account.html"
+      var usernameEl = document.querySelector("#usernameDropdown .dropdown-name")
+      if(usernameEl){
+        el.style.display = "none"
+        document.getElementById("usernameDropdown").style.display = "block"
+        usernameEl.innerHTML = logged
+        usernameEl.href = "/website/account.html"
+        document.querySelector("#usernameDropdown-profile").href="/website/user.html?user="+escape(logged)
+      }else{
+        el.innerHTML = logged
+        el.href = "/website/account.html"
+      }
       notifs.style.display = ""
       if(r.notifs){
         var amount = findUnread(r.notifs)
