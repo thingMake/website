@@ -131,7 +131,8 @@
             <h3>Your wonderful skin for MineKhan:</h3>
             <canvas id="skinCanv" style="display:block;width:160px;height:320px;image-rendering:pixelated;border:1px solid black;"></canvas><br>
             <label for="changeSkin">Upload a skin:</label>
-            <input type="file" id="changeSkin" accept=".png"><br><br>
+            <input type="file" id="changeSkin" accept=".png"><br>
+            <span id="skinStatus"></span><br><br>
             <a href="https://www.minecraftskins.com/skin-editor/" target="_blank">Make a skin</a><br>
             Can't decide what skin to make? Click <a href="https://www.minecraftskins.com/" target="_blank">here</a><br><br>
             Note: This only supports classic skins.
@@ -268,27 +269,31 @@
         }
 
         var skinUpload = document.querySelector("#changeSkin")
+        var skinStatus = document.querySelector("#skinStatus")
         var skinCanv = document.querySelector("#skinCanv")
         var fr = new FileReader()
         skinUpload.onchange = function(){
           fr.onload = function(){
-            fetch("https://server.thingmaker.repl.co/changeSkin",{
-              credentials:'include',
-              method:"POST",
-              body:JSON.stringify({
-                skin: fr.result
-              })
-            }).then(r => r.json()).then(data => {
-              if(data.success){
-                setSkin(fr.result)
-              }else{
-                alert(data.message)
-              }
-            })
+            setSkin(fr.result, true)
           }
           fr.readAsDataURL(skinUpload.files[0])
         }
-        function setSkin(url){
+        function uploadSkin(url){
+          fetch("https://server.thingmaker.repl.co/changeSkin",{
+            credentials:'include',
+            method:"POST",
+            body:JSON.stringify({
+              skin: url
+            })
+          }).then(r => r.json()).then(data => {
+            if(data.success){
+              skinStatus.innerHTML = "Uploaded."
+            }else{
+              skinStatus.innerHTML = data.message
+            }
+          })
+        }
+        function setSkin(url, upload){
           var image = new Image()
           image.onload = function(){
             if(image.width === 64 && image.height === 64){
@@ -301,6 +306,7 @@
               ctx.drawImage(image,20,20,8,12, 4,8,8,12)
               ctx.drawImage(image,4,20,4,12, 4,20,4,12)
               ctx.drawImage(image,20,52,4,12, 8,20,4,12)
+              if(upload) uploadSkin(url)
             }else{
               alert("That's not a skin, silly.")
             }

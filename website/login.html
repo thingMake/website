@@ -100,6 +100,8 @@
       }
       window.onbeforeunload = postCanceled
 
+      const urlParams = new URLSearchParams(location.search)
+      var redirect = urlParams.get("redirect")
       var usernameEl = document.getElementById("username")
       var passwordEl = document.getElementById("password")
       var emailEl = document.querySelector("#email")
@@ -119,7 +121,7 @@
         }).then(res => res.json()).then(res => {
           if(res.success){
             postLogged(username)
-            location.href = res.redirect
+            location.href = redirect || res.redirect
           }else{
             error.innerHTML = res.message
           }
@@ -139,7 +141,7 @@
         }).then(res => res.json()).then(res => {
           if(res.success){
             postLogged(username)
-            location.href = res.redirect
+            location.href = redirect || res.redirect
           }else{
             error.innerHTML = res.message
           }
