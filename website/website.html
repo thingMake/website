@@ -291,7 +291,7 @@ function searchResult() {
       show.style.display = "none"
       for(var i=0; i<r.length; i++){
         r[i] = r[i].replace("user:", '')
-        r[i] = "<a href='user.html?user="+r[i]+"'>"+r[i]+"</a>"
+        r[i] = "<a href='user.html?user="+escape(r[i])+"'>"+r[i]+"</a>"
       }
       el.innerHTML = "Users:<br>"+r.join("<br>")
     }
