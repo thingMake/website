@@ -1,13 +1,25 @@
 var navbar = document.createElement("div");
 navbar.setAttribute("class", "navbar");
 
-navbar.innerHTML=`
+navbar.innerHTML = (document.querySelector("#atHomePage") ? 
+"" : `
   <a class="logo" href="/website/website.html">My website</a>
   <input placeholder="search">
-
+`) +
+`
   <a href="/website/website.html">Home</a>
   <a href="/website/posts.html" nav="posts">Posts</a>
   <a href="https://Minekhan.thingmaker.repl.co">MineKhan</a>
+  <div class="dropdown">
+    <a class="dropdown-name">MineKhan Website</a>
+    <div class="dropdown-content">
+      <a href="https://minekhan.repl.co">Website</a>
+      <a href="https://minekhan.repl.co/maps/browse">Maps</a>
+      <a href="https://minekhan.repl.co/forum">Upload map to marketplace</a>
+      <a href="https://minekhan.repl.co/wiki">Wiki</a>
+    </div>
+  </div>
+
   <div id="adminNav"></div>
 
   <a class="right" id="loggedIn" href="/website/login.html">Log in</a>
