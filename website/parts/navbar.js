@@ -53,7 +53,7 @@ style.innerHTML = `
 .navbar{
   overflow:hidden;
   background:var(--black);
-  height:47px;
+  /*height:47px;*/
 }
 body[theme=dark] .navbar{
   background:#444;
