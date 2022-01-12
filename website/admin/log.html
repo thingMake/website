@@ -25,14 +25,20 @@
     <div id="contentBG">
       <div id="content">
         <h1>Log</h1>
-        <div id="log"></div>
+        <div id="log"></div><br><br>
+        <h3>Log options</h3>
+        <input type="checkbox" id="minekhan" checked="true">
+        <label for="minekhan">Show MineKhan activity</label>
+        <br>
         <button onclick="load()">Reload</button>
       </div>
     </div>
     <script>
       var log = document.querySelector("#log")
       function load(){
-        fetch("https://server.thingmaker.repl.co/log").then(r=>r.text()).then(r => {
+        var options = "?"
+        if(!document.querySelector("#minekhan").checked) options += "nominekhan=true"
+        fetch("https://server.thingmaker.repl.co/log"+options).then(r=>r.text()).then(r => {
           log.innerHTML = r
         }).catch(e => {
           log.innerHTML = e
