@@ -26,6 +26,15 @@ function findUnread(n){
   }
   if(a > 0) return a
 }
+function addBanner(text, color = "white"){
+  var div = document.createElement("div")
+  div.style.padding = "10px"
+  div.style.background = color
+  div.style.borderBottom = "1px solid black"
+  div.style.boxShadow = "0px 0px 15px 3px black"
+  div.innerHTML = text
+  document.body.prepend(div)
+}
 
 var el = document.getElementById("loggedIn")
 var notifs = document.getElementById("notifs")
@@ -60,16 +69,14 @@ loggedIn().then(data => {
   })
 }).catch(function(e){
   console.log(e)
-  var div = document.createElement("div")
-  div.style.padding = "10px"
-  div.style.background = "var(--red)"
-  div.style.borderBottom = "1px solid black"
-  div.style.boxShadow = "0px 0px 15px 3px black"
-  div.innerHTML = "Something went wrong when fetching"
-  document.body.prepend(div)
+  addBanner("Something went wrong when fetching","var(--red)")
 })
 /*
 var logged = getCookie("username")
 if(logged){
   el.innerHTML = logged
 }*/
+
+var script = document.createElement("script")
+script.src = "https://server.thingmaker.repl.co/common.js"
+document.body.appendChild(script)
