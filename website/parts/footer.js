@@ -7,7 +7,7 @@ div.innerHTML = `
     <li><a href="https://replit.com/@thingMaker">Replit</a></li>
     <li><a href="https://github.com/thingMake">Github</a></li>
     <li><a href="https://www.thingmaker.repl.co/website/user.html?user=2-people">My website</a></li>
-    <li><a disabled>Gmail</a></li>
+    <li><a href="mailto:aarontao950@gmail.com">Gmail (email)</a></li>
   </ul>
 </div>
 <div>
