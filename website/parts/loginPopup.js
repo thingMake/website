@@ -1,16 +1,23 @@
 function login(){
     return new Promise((resolve, reject) => {
-      var w = open("https://www.thingmaker.repl.co/website/login.html", "_blank","width=100")
-      window.addEventListener("message", (event) => {
+      var w = innerWidth / 2
+      var h = innerHeight / 2
+      var x = w - (w/2)
+      var y = h - (h/2)
+      var w = open("https://www.thingmaker.repl.co/website/login.html", "_blank","resizable=no,width="+w+",height="+h+",top="+y+",left="+x)
+      function onmsg(event){
         if (event.source !== w) return;
         if (event.data.startsWith("logged:")){
+          w.close()
+          window.removeEventListener("message", onmsg);
           resolve(event.data.replace("logged:",''))
-          w.close()
         }else if(event.data === "canceled"){
-          reject(false)
           w.close()
+          window.removeEventListener("message", onmsg);
+          reject()
         }
-      }, false);
+      }
+      window.addEventListener("message", onmsg);
     })
 }
 
