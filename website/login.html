@@ -66,16 +66,18 @@
     <script src="/website/parts/navbar.js"></script>
     <div id="contentBG">
       <div id="content">
-        <div id="left"><h1>Login<br>Register</h1></div>
+        <div id="left"><h1>Login<br>or<br>Register</h1></div>
         <div id="right">
           <h2>Login to my website</h2>
           <form>
           <label for="username">Username</label><br>
           <input id="username" type="username" class="round">
           <br><br>
-          <label for="email">Email (optional, only for registering, for password reset)</label><br>
-          <input id="email" type="email" class="round">
-          <br><br>
+          <div id="emailContainer">
+            <label for="email">Email (optional, for password reset)</label><br>
+            <input id="email" type="email" class="round">
+            <br><br>
+          </div>
           <label for="password">Password</label><br>
           <input id="password" type="password" class="round" autocomplete="current-password">
           <br><br>
@@ -83,8 +85,10 @@
           <a onclick="forgotPassword()">Forgot password?</a>
           <pre id="error" style="color:red;"></pre><br>
 
-          <button onclick="login()">Login</button><br><br>
-          <button onclick="register()">Create account</button>
+          <button onclick="login()" id="loginBtn">Login</button>
+          <button onclick="register()" id="createBtn">Create account</button>
+          <br><br>
+          <a id="switch"></a>
         </div>
       </div>
     </div>
@@ -106,6 +110,27 @@
       var passwordEl = document.getElementById("password")
       var emailEl = document.querySelector("#email")
       var error = document.getElementById("error")
+      var switchLink = document.querySelector("#switch")
+
+      function switchTo(type){
+        if(type === "login"){
+          document.querySelector("#loginBtn").classList.remove("hidden")
+          document.querySelector("#createBtn").classList.add("hidden")
+          document.querySelector("#emailContainer").classList.add("hidden")
+          switchLink.innerHTML = "Don't have an account? Register"
+        }else if(type === "register"){
+          document.querySelector("#loginBtn").classList.add("hidden")
+          document.querySelector("#createBtn").classList.remove("hidden")
+          document.querySelector("#emailContainer").classList.remove("hidden")
+          switchLink.innerHTML = "Already have an account? Login"
+        }else{
+          console.error("no such type:",type)
+        }
+      }
+      switchTo("login")
+      switchLink.onclick = function(){
+        switchTo(this.innerHTML === "Don't have an account? Register" ? "register" : "login")
+      }
 
       function login(){
         var username = usernameEl.value
