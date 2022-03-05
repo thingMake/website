@@ -82,7 +82,7 @@
           <input id="password" type="password" class="round" autocomplete="current-password">
           <br><br>
           </form>
-          <a onclick="forgotPassword()">Forgot password?</a>
+          <a onclick="forgotPassword()" id="forgotPasswordLink">Forgot password?</a>
           <pre id="error" style="color:red;"></pre><br>
 
           <button onclick="login()" id="loginBtn">Login</button>
@@ -111,17 +111,20 @@
       var emailEl = document.querySelector("#email")
       var error = document.getElementById("error")
       var switchLink = document.querySelector("#switch")
+      var forgotPasswordLink = document.querySelector("#forgotPasswordLink")
 
       function switchTo(type){
         if(type === "login"){
           document.querySelector("#loginBtn").classList.remove("hidden")
           document.querySelector("#createBtn").classList.add("hidden")
           document.querySelector("#emailContainer").classList.add("hidden")
+          forgotPasswordLink.classList.remove("hidden")
           switchLink.innerHTML = "Don't have an account? Register"
         }else if(type === "register"){
           document.querySelector("#loginBtn").classList.add("hidden")
           document.querySelector("#createBtn").classList.remove("hidden")
           document.querySelector("#emailContainer").classList.remove("hidden")
+          forgotPasswordLink.classList.add("hidden")
           switchLink.innerHTML = "Already have an account? Login"
         }else{
           console.error("no such type:",type)
