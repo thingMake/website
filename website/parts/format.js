@@ -8,7 +8,7 @@ function format(m){
   for(var i=0; i<r.length; i++){
     var a = r[i].innerHTML.split("\n")
     a.pop(); a.shift() //remove first and last
-    r[i].innerHTML = a.map(v => v ? `<img src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.17.1/assets/minecraft/textures/${v}.png">` : "<div></div>").join("")
+    r[i].innerHTML = a.map(v => v ? `<img src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.18.1/assets/minecraft/textures/${v}.png">` : "<div></div>").join("")
   }
   r = formatEl.getElementsByTagName("font")
   for(var i=0; i<r.length; i++){
@@ -22,7 +22,9 @@ function format(m){
   //m = m.replace(/ /g, "&nbsp;")
   //m = m.replace(/\n/g, "<br>"
   m = m.replace(/@([^ \n]*)/g, "<a href='user.html?user=$1'>@$1</a>")
-  m = m.replace(/(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\s+|$)/gi, "<a href='$1'>$1</a>")
+  m = m.replace(
+    /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|local|internal|io))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\s+|$)/gi
+    , "<a href='$1'>$1</a>")
 
   return m
 }
