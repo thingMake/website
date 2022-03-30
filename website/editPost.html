@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="parts/common.css">
+    <style>
+      h1.skeletonText{
+        width:50%;
+      }
+    </style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VRNT3CCCGH');
+</script>
+  </head>
+  <body>
+    <script src="/website/parts/navbar.js"></script>
+    <div id="contentBG">
+      <div id="content">
+        <h1 id="title" class="skeletonText">&nbsp;</h1><br><br>
+        <script src="/website/parts/textbox.js" textboxId="postContent" textboxPlaceholder="Content of post..."></script>
+        <br>
+        <button onclick="save()">Save</button>
+        <span id="msg" style="color:red;"></span>
+      </div>
+    </div>
+    <script src="/website/parts/format.js"></script>
+    <script>
+      const urlParams = new URLSearchParams(location.search);
+      var id = urlParams.get('id')
+      var msg = document.querySelector("#msg")
+      fetch("https://server.thingmaker.repl.co/post/"+id).then(r => r.json()).then(r => {
+        if(!r){
+          return location.href = "/website/posts.html"
+        }
+
+        var titleEl = document.querySelector("#title")
+        titleEl.classList.remove("skeletonText")
+        document.title = titleEl.innerHTML = "Edit \""+r.title+"\""
+
+        document.querySelector("#postContent .comment-box").value = r.content
+      })
+
+      function save(){
+        var content = document.querySelector("#postContent .comment-box").value
+        fetch("https://server.thingmaker.repl.co/editPost/"+id, {
+          method:"POST",
+          credentials:"include",
+          body:JSON.stringify({content:content})
+        }).then(r => r.json()).then(r => {
+          if(r.success){
+            location.href = "/website/post.html?id="+id
+          }else{
+            msg.innerHTML = r.message
+          }
+        }).catch(e => {
+          msg.innerHTML = e
+        })
+      }
+    </script>
+  </body>
+</html>

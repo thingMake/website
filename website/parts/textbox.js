@@ -102,6 +102,8 @@ body[theme=dark] .comment-area .comment-format > div:hover{
   }
   me.setAttribute("textboxId",id)
 
+  var placeholder = me.getAttribute("textboxPlaceholder") || "Write something..."
+
   var el = document.createElement("div")
   el.id = id
   el.classList.add("comment-area")
@@ -110,7 +112,7 @@ body[theme=dark] .comment-area .comment-format > div:hover{
   <div class="selected comment-write onclick="commentMode('write')">Write</div><!--
 --><div onclick="commentMode('preview')" class="comment-preview">Preview</div>
 </div>
-<textarea class="comment-box" placeholder="Write something..."></textarea>
+<textarea class="comment-box" placeholder="${placeholder}"></textarea>
 <div class="comment-previewBox format" style="display:none;"></div>
 <div class="comment-format">
   

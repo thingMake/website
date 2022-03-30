@@ -236,6 +236,10 @@
 
       function fetchPost(){
       fetch("https://server.thingmaker.repl.co/post/"+id).then(r => r.json()).then(d => {
+        if(!d){
+          return location.href = "/website/posts.html"
+        }
+        
         var s = document.querySelectorAll(".skeletonText")
         for(var i=0; i<s.length; i++){
           s[i].classList.remove("skeletonText")
@@ -274,8 +278,10 @@
           if(!r) return
           myUsername = r.username
           if(d.username === myUsername || r.admin){
-            document.querySelector("#options").innerHTML = `<a>Edit</a>&nbsp;&nbsp;
-            <a onclick="deletePost()">Delete</a>`
+            document.querySelector("#options").innerHTML = `
+<a href="/website/editPost.html?id=${window.id}">Edit</a>&nbsp;&nbsp;
+<a onclick="deletePost()">Delete</a>
+`
           }
           if(d.followers){
             follow(d.followers.includes(myUsername), true)
@@ -356,8 +362,8 @@
           fetchPost()
         }
       }, 1000)
-      initWs()
       fetchPost()
+      initWs()
 
       function deletePost(){
         if(!confirm("Are you sure you want to delete this post?")) return

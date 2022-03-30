@@ -45,17 +45,19 @@
         <h1>Create a new post</h1>
         <input id="title" placeholder="Title of post">
         <br><br>
-        <textarea id="postContent" placeholder="Content of post..."></textarea>
+        <!--<textarea id="postContent" placeholder="Content of post..."></textarea>-->
+        <script src="/website/parts/textbox.js" textboxId="postContent" textboxPlaceholder="Content of post..."></script>
         <pre id="error" style="color:red;"></pre>
 
         <button onclick="post()">Create post</button>
       </div>
     </div>
+    <script src="/website/parts/format.js"></script>
     <script>
       var error = document.getElementById("error")
       function post(){
         var title = document.getElementById("title").value
-        var content = document.getElementById("postContent").value
+        var content = document.querySelector("#postContent .comment-box").value
         fetch("https://server.thingmaker.repl.co/post",{
           method: "POST",
           credentials: 'include',
