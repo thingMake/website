@@ -29,6 +29,7 @@ function format(m){
   return m
 }
 function prismHilite(el){
+  if(!window.Prism) return
   var pres = el.getElementsByTagName("pre")
   for(var i=0; i<pres.length; i++){
     var pre = pres[i]
