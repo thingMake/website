@@ -372,7 +372,11 @@
           if(url){
             var image = new Image()
             image.onload = function(){
-              ctx.drawImage(this, 1,1,10,16, 0,0,10,16)
+              var pixW = image.width / 64
+              var pixH = image.height / 32
+              canvas.width = pixW * 10
+              canvas.height = pixH * 16
+              ctx.drawImage(this, pixW,pixH,pixW*10,pixH*16, 0,0,canvas.width,canvas.height)
             }
             image.onerror = e => alert("Error! "+e)
             image.src = url
