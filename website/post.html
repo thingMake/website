@@ -269,8 +269,10 @@
         if(location.hash[0] === "#"){
           setTimeout(() => {
             var el = document.querySelector(location.hash)
-            if(el) el.scrollIntoView({block:"center"})
-            el.style.animation = "1s linear flash"
+            if(el){
+              el.scrollIntoView({block:"center"})
+              el.style.animation = "1s linear flash"
+            }
           }, 10)
         }
 
