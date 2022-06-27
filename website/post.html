@@ -140,6 +140,7 @@
         margin:16px 0;
       }
     </style>
+    <script src="/website/parts/utils.js"></script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
@@ -234,7 +235,8 @@
         follow(!following)
       }
 
-      function fetchPost(){
+      async function fetchPost(){
+        var timeOffset = await getLocalTime()
       fetch("https://server.thingmaker.repl.co/post/"+id).then(r => r.json()).then(d => {
         if(!d){
           return location.href = "/website/posts.html"
@@ -248,12 +250,12 @@
 
         document.title = "Post: "+d.title
         document.querySelector("#title").innerHTML = d.title
-        document.querySelector("#timestamp").innerHTML = convertUTCDateToLocalDate(d.timestamp)
+        document.querySelector("#timestamp").innerHTML = timeString(d.timestamp+timeOffset)
         document.querySelector("#by").innerHTML = "by <a href='user.html?user="+d.username+"'>"+d.username+"</a>"
         document.querySelector("#postContent").innerHTML = format(d.content)
 
         var comments = d.comments || []
-        commentsHeader.innerHTML += " ("+comments.length+")"
+        commentsHeader.innerHTML = "Comments ("+comments.length+")"
         commentEl.innerHTML = ""
         for(var i=0; i<comments.length; i++){
           var c = comments[i]
@@ -262,7 +264,8 @@
           commentEl.innerHTML += "<div class='comment' id='"+id+"'>"
           +"<div class='top'><a class='user' href='user.html?user="+c.username+"'>"
           +"<img class='pfp' src='"+(c.pfp || ("https://server.thingmaker.repl.co/pfp/"+c.username))+"'>"
-          +"<span class='username'>"+c.username+"</span></a></div>"
+          +"<span class='username'>"+c.username+"</span></a>"
+          +"<span class='right time' style='padding:0 8px;'>"+(c.timestamp ? timeString(c.timestamp+timeOffset) : "")+"</span></div>"
           +"<div class='commentCotent format'>"+format(c.comment)+"</div></div>"
         }
 
@@ -432,18 +435,6 @@
           if(d === "error") return alert("error")
           c.style.display = "none"
         })
-      }
-
-      function convertUTCDateToLocalDate(date) {
-        date = new Date(date)
-        var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
-
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-
-        newDate.setHours(hours - offset);
-
-        return newDate.toLocaleString();
       }
     </script>
   </body>

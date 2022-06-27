@@ -23,6 +23,7 @@
       }
       .floatright{float:right}
     </style>
+    <script src="/website/parts/utils.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VRNT3CCCGH"></script>
 <script>
@@ -59,24 +60,13 @@
     </div>
     <script>
       var content = document.getElementById("content")
-      fetch("https://server.thingmaker.repl.co/posts").then(r => r.json()).then(data => {
+      fetch("https://server.thingmaker.repl.co/posts").then(r => r.json()).then(async data => {
+        var offset = await getLocalTime()
         data.forEach(r => {
-          content.innerHTML += `<div class="box"><a href="post.html?id=${r.id}">${r.title}</a> <span class="floatright">${convertUTCDateToLocalDate(r.timestamp)}</span> <br>by <a href="user.html?user=${r.username}">${r.username}</a></div>`
+          content.innerHTML += `<div class="box" id="${r.id}"><a href="post.html?id=${r.id}">${r.title}</a> <span class="floatright">${timeString(r.timestamp+offset)}</span> <br>by <a href="user.html?user=${r.username}">${r.username}</a></div>`
         })
         document.querySelector("#skeleton").classList.add("hidden")
       })
-
-      function convertUTCDateToLocalDate(date) {
-        date = new Date(date)
-        var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
-
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-
-        newDate.setHours(hours - offset);
-
-        return newDate.toLocaleString();
-      }
     </script>
   </body>
 </html>
